@@ -5,7 +5,7 @@ function EventList({ events }) {
   const renderEvents = () => {
     events.sort((a, b) => new Date(b.event_date) - new Date(a.event_date));
 
-    return events.map(event => (
+    return events.map((event) => (
       <li key={event.id}>
         {event.event_date}
         {' - '}
@@ -20,7 +20,7 @@ function EventList({ events }) {
       <ul>{renderEvents()}</ul>
     </section>
   );
-};
+}
 
 EventList.propTypes = {
   events: PropTypes.arrayOf(PropTypes.object),
@@ -31,4 +31,3 @@ EventList.defaultProps = {
 };
 
 export default EventList;
-

@@ -14,7 +14,7 @@ function Editor() {
       } catch (error) {
         console.error(error);
       }
-    }
+    };
     fetchData();
   }, []);
 
@@ -26,7 +26,6 @@ function Editor() {
       <EventList events={events} />
     </div>
   );
-};
+}
 
 export default Editor;
-
