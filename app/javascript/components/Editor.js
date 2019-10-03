@@ -7,39 +7,39 @@ import EventList from './EventList';
 import PropsRoute from './PropsRoute';
 import Event from './Event';
 import EventForm from './EventForm';
+import { success } from '../helpers/notifications';
+import { handleAjaxError } from '../helpers/helpers';
 
 function Editor({ match, history }) {
   const [events, setEvents] = useState(null);
 
-  const addEvent = (newEvent) => {
-    axios
-      .post('/api/events.json', newEvent)
-      .then((response) => {
-        const savedEvent = response.data;
+  const addEvent = async (newEvent) => {
+    try {
+      const response = await axios.post('/api/events.json', newEvent);
+      const savedEvent = response.data;
 
-        setEvents((prevEvents) => ([...prevEvents, savedEvent]));
-        history.push(`/events/${savedEvent.id}`);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      success('Event Added!');
+      setEvents((prevEvents) => ([...prevEvents, savedEvent]));
+      history.push(`/events/${savedEvent.id}`);
+    } catch (error) {
+      handleAjaxError(error);
+    }
   };
 
 
-  const deleteEvent = (eventId) => {
+  const deleteEvent = async (eventId) => {
     const confirmation = window.confirm('Are you sure?');
     if (confirmation) {
-      axios
-        .delete(`/api/events/${eventId}.json`)
-        .then((response) => {
-          if (response.status === 204) {
-            history.push('/events');
-            setEvents(events.filter((event) => event.id !== eventId));
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      try {
+        const response = await axios.delete(`/api/events/${eventId}.json`);
+        if (response.status === 204) {
+          success('Event deleted');
+          history.push('/events');
+          setEvents(events.filter((event) => event.id !== eventId));
+        }
+      } catch (error) {
+        handleAjaxError(error);
+      }
     }
   };
 
@@ -49,7 +49,7 @@ function Editor({ match, history }) {
         const response = await axios.get('/api/events.json');
         setEvents(response.data);
       } catch (error) {
-        console.error(error);
+        handleAjaxError(error);
       }
     };
     fetchData();
