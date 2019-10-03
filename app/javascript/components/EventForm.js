@@ -1,6 +1,7 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState, createRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Pikaday from 'pikaday';
+import { Link } from 'react-router-dom';
 import { isEmptyObject, validateEvent, formatDate } from '../helpers/helpers';
 import 'pikaday/css/pikaday.css';
 
@@ -8,6 +9,8 @@ function EventForm({ event: initialEvent, onSubmit }) {
   const [event, setEvent] = useState(initialEvent);
   const [errors, setErrors] = useState({});
   const dateInput = createRef();
+  const cancelURL = event.id ? `/events/${event.id}` : '/events';
+  const title = event.id ? `${event.event_date} - ${event.event_type}` : 'New Event';
 
   const updateEvent = (key, value) => {
     setEvent((prevEventState) => ({
@@ -69,7 +72,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
 
   return (
     <div>
-      <h2>New Event</h2>
+      <h2>{title}</h2>
       {renderErrors()}
       <form className="eventForm" onSubmit={handleSubmit}>
         <div>
@@ -149,6 +152,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
         </div>
         <div className="form-actions">
           <button type="submit">Save</button>
+          <Link to={cancelURL}>Cancel</Link>
         </div>
       </form>
     </div>
