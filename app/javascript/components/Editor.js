@@ -8,8 +8,22 @@ import PropsRoute from './PropsRoute';
 import Event from './Event';
 import EventForm from './EventForm';
 
-function Editor({ match }) {
+function Editor({ match, history }) {
   const [events, setEvents] = useState(null);
+
+  const addEvent = (newEvent) => {
+    axios
+      .post('/api/events.json', newEvent)
+      .then((response) => {
+        const savedEvent = response.data;
+
+        setEvents((prevEvents) => ([...prevEvents, savedEvent]));
+        history.push(`/events/${savedEvent.id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +48,7 @@ function Editor({ match }) {
       <div className="grid">
         <EventList events={events} activeId={Number(eventId)} />
         <Switch>
-          <PropsRoute path="/events/new" component={EventForm} />
+          <PropsRoute path="/events/new" component={EventForm} onSubmit={addEvent} />
           <PropsRoute path="/events/:id" component={Event} event={event} />
         </Switch>
       </div>
@@ -44,6 +58,7 @@ function Editor({ match }) {
 
 Editor.propTypes = {
   match: PropTypes.shape(),
+  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
 };
 
 Editor.defaultProps = {

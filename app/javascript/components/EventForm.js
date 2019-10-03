@@ -4,7 +4,7 @@ import Pikaday from 'pikaday';
 import { isEmptyObject, validateEvent, formatDate } from '../helpers/helpers';
 import 'pikaday/css/pikaday.css';
 
-function EventForm({ event: initialEvent }) {
+function EventForm({ event: initialEvent, onSubmit }) {
   const [event, setEvent] = useState(initialEvent);
   const [errors, setErrors] = useState({});
   const dateInput = createRef();
@@ -29,7 +29,7 @@ function EventForm({ event: initialEvent }) {
     if (!isEmptyObject(validationErrors)) {
       setErrors(validationErrors);
     } else {
-      console.log('submitted');
+      onSubmit(event);
     }
   };
 
@@ -145,6 +145,7 @@ function EventForm({ event: initialEvent }) {
 
 EventForm.propTypes = {
   event: PropTypes.shape(),
+  onSubmit: PropTypes.func.isRequired,
 };
 
 EventForm.defaultProps = {
