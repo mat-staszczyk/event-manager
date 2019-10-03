@@ -26,6 +26,19 @@ function Editor({ match, history }) {
     }
   };
 
+  const updateEvent = async (updatedEvent) => {
+    try {
+      axios.put(`/api/events/${updatedEvent.id}.json`, updatedEvent);
+      success('Event updated');
+      const eventIndex = events.findIndex((eventItem) => eventItem.id === updatedEvent.id);
+      events[eventIndex] = updatedEvent;
+      history.push(`/events/${updatedEvent.id}`);
+      setEvents(events);
+    } catch (error) {
+      handleAjaxError(error);
+    }
+  };
+
 
   const deleteEvent = async (eventId) => {
     const confirmation = window.confirm('Are you sure?');
@@ -66,8 +79,24 @@ function Editor({ match, history }) {
       <div className="grid">
         <EventList events={events} activeId={Number(eventId)} />
         <Switch>
-          <PropsRoute path="/events/new" component={EventForm} onSubmit={addEvent} />
-          <PropsRoute path="/events/:id" component={Event} event={event} onDelete={deleteEvent} />
+          <PropsRoute
+            path="/events/new"
+            component={EventForm}
+            onSubmit={addEvent}
+          />
+          <PropsRoute
+            exact
+            path="/events/:id/edit"
+            component={EventForm}
+            event={event}
+            onSubmit={updateEvent}
+          />
+          <PropsRoute
+            path="/events/:id"
+            component={Event}
+            event={event}
+            onDelete={deleteEvent}
+          />
         </Switch>
       </div>
     </div>

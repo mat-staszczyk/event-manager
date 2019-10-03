@@ -58,9 +58,14 @@ function EventForm({ event: initialEvent, onSubmit }) {
   useEffect(() => {
     new Pikaday({
       field: dateInput.current,
+      toString: (date) => formatDate(date),
       onSelect: (date) => setEventDate(date),
     });
   }, []);
+
+  useEffect(() => {
+    setEvent(initialEvent);
+  }, [initialEvent]);
 
   return (
     <div>
@@ -75,6 +80,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
               id="event_type"
               name="event_type"
               onChange={handleInputChange}
+              value={event.event_type}
             />
           </label>
         </div>
@@ -87,6 +93,8 @@ function EventForm({ event: initialEvent, onSubmit }) {
               name="event_date"
               ref={dateInput}
               autoComplete="off"
+              onChange={handleInputChange}
+              value={event.event_date}
             />
           </label>
         </div>
@@ -99,6 +107,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
               id="title"
               name="title"
               onChange={handleInputChange}
+              value={event.title}
             />
           </label>
         </div>
@@ -110,6 +119,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
               id="speaker"
               name="speaker"
               onChange={handleInputChange}
+              value={event.speaker}
             />
           </label>
         </div>
@@ -121,6 +131,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
               id="host"
               name="host"
               onChange={handleInputChange}
+              value={event.host}
             />
           </label>
         </div>
@@ -132,6 +143,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
               id="published"
               name="published"
               onChange={handleInputChange}
+              checked={event.published}
             />
           </label>
         </div>
