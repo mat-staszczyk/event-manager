@@ -21,8 +21,26 @@ function Editor({ match, history }) {
         history.push(`/events/${savedEvent.id}`);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
+  };
+
+
+  const deleteEvent = (eventId) => {
+    const confirmation = window.confirm('Are you sure?');
+    if (confirmation) {
+      axios
+        .delete(`/api/events/${eventId}.json`)
+        .then((response) => {
+          if (response.status === 204) {
+            history.push('/events');
+            setEvents(events.filter((event) => event.id !== eventId));
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   useEffect(() => {
@@ -49,7 +67,7 @@ function Editor({ match, history }) {
         <EventList events={events} activeId={Number(eventId)} />
         <Switch>
           <PropsRoute path="/events/new" component={EventForm} onSubmit={addEvent} />
-          <PropsRoute path="/events/:id" component={Event} event={event} />
+          <PropsRoute path="/events/:id" component={Event} event={event} onDelete={deleteEvent} />
         </Switch>
       </div>
     </div>
