@@ -1,11 +1,12 @@
-import React, { useState, createRef, useEffect, useCallback } from 'react';
+import React, { useState, createRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Pikaday from 'pikaday';
 import { Link } from 'react-router-dom';
+import EventNotFound from './EventNotFound';
 import { isEmptyObject, validateEvent, formatDate } from '../helpers/helpers';
 import 'pikaday/css/pikaday.css';
 
-function EventForm({ event: initialEvent, onSubmit }) {
+function EventForm({ event: initialEvent, onSubmit, path }) {
   const [event, setEvent] = useState(initialEvent);
   const [errors, setErrors] = useState({});
   const dateInput = createRef();
@@ -69,6 +70,8 @@ function EventForm({ event: initialEvent, onSubmit }) {
   useEffect(() => {
     setEvent(initialEvent);
   }, [initialEvent]);
+
+  if (!event.id && path === '/events/:id/edit') return <EventNotFound />;
 
   return (
     <div>
@@ -162,6 +165,7 @@ function EventForm({ event: initialEvent, onSubmit }) {
 EventForm.propTypes = {
   event: PropTypes.shape(),
   onSubmit: PropTypes.func.isRequired,
+  path: PropTypes.string.isRequired,
 };
 
 EventForm.defaultProps = {
