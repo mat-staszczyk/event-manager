@@ -11,18 +11,18 @@ const defaults = {
 
 export { Alert };
 
-export const success = (message, options = {}) => {
+export const success = (message: string, options = {}) => {
   Alert.success(message, Object.assign(defaults, options));
 };
 
-export const info = (message, options = {}) => {
+export const info = (message: string, options = {}) => {
   Alert.info(message, Object.assign(defaults, options));
 };
 
-export const warning = (message, options = {}) => {
+export const warning = (message: string, options = {}) => {
   Alert.warning(message, Object.assign(defaults, options));
 };
 
-export const error = (message, options = {}) => {
+export const error = (message: string, options = {}) => {
   Alert.error(message, Object.assign(defaults, options));
 };

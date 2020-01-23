@@ -1,16 +1,22 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import EventType from '../types/event';
 
-function EventList({ activeId, events }) {
+interface EventListProps {
+  activeId: number,
+  events: Array<EventType>
+}
+
+function EventList({ activeId, events }: EventListProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const searchInput = useRef();
+  const searchInput = useRef<HTMLInputElement>(null);
 
   const updateSearchTerm = () => {
-    setSearchTerm(searchInput.current.value);
+    if (searchInput.current) setSearchTerm(searchInput.current.value);
   };
 
-  const matchSearchTerm = (obj) => {
+  const matchSearchTerm = (obj: EventType) => {
     const {
       id,
       published,
@@ -27,7 +33,7 @@ function EventList({ activeId, events }) {
   const renderEvents = () => {
     const filteredEvents = events
       .filter((el) => matchSearchTerm(el))
-      .sort((a, b) => new Date(b.event_date) - new Date(a.event_date));
+      .sort((a, b) => +new Date(b.event_date) - +new Date(a.event_date));
 
     return filteredEvents.map((event) => (
       <li key={event.id}>

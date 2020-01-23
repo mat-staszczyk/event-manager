@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { History } from 'history'
 import { Switch } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import Header from './Header';
 import EventList from './EventList';
 import PropsRoute from './PropsRoute';
@@ -9,11 +9,21 @@ import Event from './Event';
 import EventForm from './EventForm';
 import { success } from '../helpers/notifications';
 import { handleAjaxError } from '../helpers/helpers';
+import EventType from '../types/event';
 
-function Editor({ match, history }) {
-  const [events, setEvents] = useState(null);
+interface EditorProps {
+  match: {
+    params: {
+      id: number,
+    }
+  }
+  history: History,
+}
 
-  const addEvent = async (newEvent) => {
+function Editor({ match, history }: EditorProps) {
+  const [events, setEvents] = useState<Array<EventType>>([]);
+
+  const addEvent = async (newEvent: EventType) => {
     try {
       const response = await axios.post('/api/events.json', newEvent);
       const savedEvent = response.data;
@@ -26,7 +36,7 @@ function Editor({ match, history }) {
     }
   };
 
-  const updateEvent = async (updatedEvent) => {
+  const updateEvent = async (updatedEvent: EventType) => {
     try {
       axios.put(`/api/events/${updatedEvent.id}.json`, updatedEvent);
       success('Event updated');
@@ -40,7 +50,7 @@ function Editor({ match, history }) {
   };
 
 
-  const deleteEvent = async (eventId) => {
+  const deleteEvent = async (eventId: number) => {
     const confirmation = window.confirm('Are you sure?');
     if (confirmation) {
       try {
@@ -71,7 +81,7 @@ function Editor({ match, history }) {
   if (events === null) return null;
 
   const eventId = match.params.id;
-  const event = events.find((e) => e.id === Number(eventId));
+  const event = events.find((e: EventType) => e.id === Number(eventId));
 
   return (
     <div>
@@ -80,20 +90,20 @@ function Editor({ match, history }) {
         <EventList events={events} activeId={Number(eventId)} />
         <Switch>
           <PropsRoute
-            path="/events/new"
             component={EventForm}
+            path="/events/new"
             onSubmit={addEvent}
           />
           <PropsRoute
+            component={EventForm}
             exact
             path="/events/:id/edit"
-            component={EventForm}
             event={event}
             onSubmit={updateEvent}
           />
           <PropsRoute
-            path="/events/:id"
             component={Event}
+            path="/events/:id"
             event={event}
             onDelete={deleteEvent}
           />
@@ -102,11 +112,6 @@ function Editor({ match, history }) {
     </div>
   );
 }
-
-Editor.propTypes = {
-  match: PropTypes.shape(),
-  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
-};
 
 Editor.defaultProps = {
   match: undefined,
