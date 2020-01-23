@@ -1,4 +1,4 @@
-export default type EventType = {
+export default interface EventType {
   id: number,
   event_type: string,
   event_date: Date,

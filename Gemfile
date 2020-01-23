@@ -10,7 +10,7 @@ gem 'puma', '~> 3.12'
 gem 'rails', '~> 6.0.0'
 gem 'responders', '~> 3.0.0'
 gem 'sass-rails', '~> 5'
-gem 'webpacker', '~> 4.0'
+gem 'webpacker', '~> 4.2.2'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

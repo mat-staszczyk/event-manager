@@ -20,7 +20,7 @@ function EventForm({ event: initialEvent, onSubmit, path }: EventFormProps): JSX
   const title = event.id ? `${event.event_date} - ${event.event_type}` : 'New Event';
 
   const updateEvent = (key: string, value: string | boolean) => {
-    setEvent((prevEventState) => ({
+    setEvent((prevEventState: EventType) => ({
       ...prevEventState,
       [key]: value,
     }));

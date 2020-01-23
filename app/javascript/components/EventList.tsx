@@ -26,7 +26,7 @@ function EventList({ activeId, events }: EventListProps) {
     } = obj;
 
     return Object.values(rest).some(
-      (value) => value.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1,
+      (value: string) => value.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1,
     );
   };
 

@@ -8,6 +8,7 @@ const renderMergedProps = (component, ...rest) => {
 };
 
 const PropsRoute = ({ component, ...rest }) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
   <Route {...rest} render={(routeProps) => renderMergedProps(component, routeProps, rest)} />
 );
 
