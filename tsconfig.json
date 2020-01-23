@@ -10,10 +10,12 @@
     "target": "es5",
     "jsx": "react",
     "allowSyntheticDefaultImports":true,
-    "noImplicitAny":true,
-    "noImplicitThis":true,
-    "noImplicitReturns":true,
-    "strictNullChecks":true
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    // Drop allowJs after PropsRoute migration
+    "allowJs": true
   },
   "exclude": [
     "**/*.spec.ts",
