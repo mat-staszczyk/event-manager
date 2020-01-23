@@ -1,33 +1,38 @@
-import React, { useState, createRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useRef, useEffect } from 'react';
 import Pikaday from 'pikaday';
 import { Link } from 'react-router-dom';
 import EventNotFound from './EventNotFound';
 import { isEmptyObject, validateEvent, formatDate } from '../helpers/helpers';
+import EventType from '../types/event';
 import 'pikaday/css/pikaday.css';
 
-function EventForm({ event: initialEvent, onSubmit, path }) {
+type EventFormProps = {
+  event: EventType,
+  onSubmit(event: EventType): void,
+  path: string,
+}
+
+function EventForm({ event: initialEvent, onSubmit, path }: EventFormProps): JSX.Element {
   const [event, setEvent] = useState(initialEvent);
   const [errors, setErrors] = useState({});
-  const dateInput = createRef();
+  const dateInput = useRef(null);
   const cancelURL = event.id ? `/events/${event.id}` : '/events';
   const title = event.id ? `${event.event_date} - ${event.event_type}` : 'New Event';
 
-  const updateEvent = (key, value) => {
+  const updateEvent = (key: string, value: string | boolean) => {
     setEvent((prevEventState) => ({
       ...prevEventState,
       [key]: value,
     }));
   };
 
-  const handleInputChange = (e) => {
-    const { target } = e;
-    const { name } = target;
+  const handleInputChange = (e: React.FormEvent) => {
+    const target = e.target as HTMLInputElement;
     const value = target.type === 'checkbox' ? target.checked : target.value;
-    updateEvent(name, value);
+    updateEvent(target.name, value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validateEvent(event);
     if (!isEmptyObject(validationErrors)) {
@@ -46,7 +51,7 @@ function EventForm({ event: initialEvent, onSubmit, path }) {
       <div className="errors">
         <h3>The following errors prohibited the event from being saved:</h3>
         <ul>
-          {Object.values(errors).map((error) => (
+          {Object.values(errors).map((error: string) => (
             <li key={error}>{error}</li>
           ))}
         </ul>
@@ -54,7 +59,7 @@ function EventForm({ event: initialEvent, onSubmit, path }) {
     );
   };
 
-  const setEventDate = (date) => {
+  const setEventDate = (date: Date) => {
     const formattedDate = formatDate(date);
     updateEvent('event_date', formattedDate);
   };
@@ -62,8 +67,8 @@ function EventForm({ event: initialEvent, onSubmit, path }) {
   useEffect(() => {
     new Pikaday({
       field: dateInput.current,
-      toString: (date) => formatDate(date),
-      onSelect: (date) => setEventDate(date),
+      toString: (date: Date) => formatDate(date),
+      onSelect: (date: Date) => setEventDate(date),
     });
   }, []);
 
@@ -100,7 +105,7 @@ function EventForm({ event: initialEvent, onSubmit, path }) {
               ref={dateInput}
               autoComplete="off"
               onChange={handleInputChange}
-              value={event.event_date}
+              value={event.event_date.toString()}
             />
           </label>
         </div>
@@ -108,8 +113,8 @@ function EventForm({ event: initialEvent, onSubmit, path }) {
           <label htmlFor="title">
             <strong>Title:</strong>
             <textarea
-              cols="30"
-              rows="10"
+              cols={30}
+              rows={10}
               id="title"
               name="title"
               onChange={handleInputChange}
@@ -149,7 +154,7 @@ function EventForm({ event: initialEvent, onSubmit, path }) {
               id="published"
               name="published"
               onChange={handleInputChange}
-              checked={event.published}
+              checked={!!event.published}
             />
           </label>
         </div>
@@ -161,12 +166,6 @@ function EventForm({ event: initialEvent, onSubmit, path }) {
     </div>
   );
 }
-
-EventForm.propTypes = {
-  event: PropTypes.shape(),
-  onSubmit: PropTypes.func.isRequired,
-  path: PropTypes.string.isRequired,
-};
 
 EventForm.defaultProps = {
   event: {

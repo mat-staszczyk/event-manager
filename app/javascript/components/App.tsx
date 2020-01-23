@@ -4,7 +4,7 @@ import { Alert } from '../helpers/notifications';
 import Editor from './Editor';
 import './App.css';
 
-const App = () => (
+const App: React.FC = () => (
   <div>
     <Route path="/events/:id?" component={Editor} />
     <Alert stack={{ limit: 3 }} />
